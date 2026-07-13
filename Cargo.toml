@@ -2,6 +2,11 @@
 resolver = "3"
 members = ["crates/*"]
 
+# Shared package fields — crates inherit these with `<field>.workspace = true`.
+# Single source of truth for the version; `env!("CARGO_PKG_VERSION")` reads it.
+[workspace.package]
+version = "0.1.0"
+
 [workspace.dependencies]
 # Exact pin: gix 0.x churns. Bump deliberately, not via `cargo update`.
 gix = "=0.85.0"
