@@ -1,1 +1,4 @@
 PLAN.md
+/target
+.direnv
+todo.norg
