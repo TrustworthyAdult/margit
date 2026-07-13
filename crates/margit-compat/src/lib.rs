@@ -85,9 +85,31 @@ pub fn passthrough(args: Vec<String>) -> ! {
         }
     };
 
-    let result = Command::new(git).args(args).status();
+    let mut command = Command::new(git);
+    command.args(args);
+    run(command)
+}
 
-    match result {
+/// Transfer control to `command` (the real git) and never return.
+///
+/// On Unix this `exec`s: margit's process is *replaced* by git, so signal
+/// handling, the controlling terminal, and exit codes (including 128+n signal
+/// deaths) are exactly git's, with no wrapper process in the way. `exec` only
+/// returns if it failed to replace the process at all.
+#[cfg(unix)]
+fn run(mut command: Command) -> ! {
+    use std::os::unix::process::CommandExt;
+
+    let err = command.exec();
+    eprintln!("margit: failed to exec git: {err}");
+    std::process::exit(1);
+}
+
+/// Non-Unix fallback: spawn git, wait, and forward its exit code. There is no
+/// `exec` here, so margit remains as a parent process for git's lifetime.
+#[cfg(not(unix))]
+fn run(mut command: Command) -> ! {
+    match command.status() {
         Ok(status) => std::process::exit(status.code().unwrap_or(1)),
         Err(err) => {
             eprintln!("margit: failed to run git: {err}");
