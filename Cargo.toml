@@ -1,0 +1,13 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.dependencies]
+# Exact pin: gix 0.x churns. Bump deliberately, not via `cargo update`.
+gix = "=0.85.0"
+
+# Profiles are only honored in the workspace root.
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"

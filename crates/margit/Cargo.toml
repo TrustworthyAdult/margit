@@ -1,0 +1,9 @@
+[package]
+name = "margit"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+margit-compat = { version = "0.1.0", path = "../margit-compat" }
+margit-core = { version = "0.1.0", path = "../margit-core" }
+margit-ui = { version = "0.1.0", path = "../margit-ui" }
