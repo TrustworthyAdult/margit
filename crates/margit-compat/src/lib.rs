@@ -1,14 +1,12 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+use std::process::Command;
+pub fn passthrough(args: Vec<String>) -> ! {
+    let result = Command::new("git").args(args).status();
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    match result {
+        Ok(status) => std::process::exit(status.code().unwrap_or(1)),
+        Err(err) => {
+            eprintln!("margit: failed to run git: {err}");
+            std::process::exit(1);
+        }
     }
 }
